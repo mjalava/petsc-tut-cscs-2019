@@ -32,7 +32,7 @@ int main(int argc,char **argv)
   */
   ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
   //TODO task 3
-  ierr = VecSetSizes(x,rank+1,rank+1);CHKERRQ(ierr);
+  ierr = VecSetSizes(x,rank+1,PETSC_DECIDE);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
   ierr = VecSet(x,1.0);CHKERRQ(ierr);
 
@@ -61,7 +61,8 @@ int main(int argc,char **argv)
      by placing code between these two statements.
   */
   //TODO task 5
-
+  ierr = VecAssemblyBegin(x);CHKERRQ(ierr);
+  ierr = VecAssemblyEnd(x);CHKERRQ(ierr);
   /*
       View the vector.
   */
@@ -69,8 +70,8 @@ int main(int argc,char **argv)
 
   //TODO tasks 9 and 10
   ierr = VecZeroEntries(x);CHKERRQ(ierr);
-  //ierr = VecGet...(x,&lo,&hi);CHKERRQ(ierr);
-  for (i=0; i<N; i++) {
+  ierr = VecGetOwnershipRange(x,&lo,&hi);CHKERRQ(ierr);
+  for (i=lo; i<N; i++) {
     ierr = VecSetValues(x,1,&i,&integer,ADD_VALUES);CHKERRQ(ierr);
   }
   ierr = VecAssemblyBegin(x);CHKERRQ(ierr);
@@ -79,12 +80,12 @@ int main(int argc,char **argv)
 
   //TODO task 11
   integer = rank+1;
-  //for () {
-  //
-  //}
+  for (i=lo; i<hi;i++) {
+    ierr = VecSetValues(x,1,&i,&integer,INSERT_VALUES);CHKERRQ(ierr);
+  }
   ierr = VecAssemblyBegin(x);CHKERRQ(ierr);
   ierr = VecAssemblyEnd(x);CHKERRQ(ierr);
-  //ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+  ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /*
       Destroy the vector and finalize PETSc.

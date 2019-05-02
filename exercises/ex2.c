@@ -26,17 +26,17 @@ int main(int argc,char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Option -f set to value \"%s\".\n",filename);CHKERRQ(ierr);
   }
   /* TODO task 6 */
-  ierr = PetscOptionsGetInt(NULL,NULL,"-int",&n,&flg);CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,&flg);CHKERRQ(ierr);
   if (flg) {
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Option -n set to value \"%d\".\n",n);CHKERRQ(ierr);
   }
 
   ierr = PetscViewerCreate(PETSC_COMM_WORLD, &viewer);CHKERRQ(ierr);
   ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
-  ierr = PetscViewerFileSetMode(viewer, FILE_MODE_APPEND);CHKERRQ(ierr);
+  ierr = PetscViewerFileSetMode(viewer, FILE_MODE_WRITE);CHKERRQ(ierr);
 
   /* TODO tasks 4, 5 - insert below */
-
+  ierr = PetscViewerFileSetName(viewer,filename);
   for (i = 0; i < n; ++i) {
     ierr = PetscViewerASCIIPrintf(viewer, "test line %d\n", i);CHKERRQ(ierr);
   }
@@ -49,6 +49,7 @@ int main(int argc,char **args)
   }
   ierr = PetscViewerASCIISynchronizedPrintf(viewer, "---\n");CHKERRQ(ierr);
   /* TODO task 7 - add PetscViewerFlush() call */
+  ierr = PetscViewerFlush(viewer);
   ierr = PetscViewerASCIIPopSynchronized(viewer);CHKERRQ(ierr);
 
   ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);

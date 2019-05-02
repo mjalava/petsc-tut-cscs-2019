@@ -19,6 +19,7 @@ int main(int argc,char **args)
   PetscInt       i, n = 5, N, Istart, Iend;
   PetscInt       row[2], col[2];
   PetscScalar    value[4];
+  PetscViewer viewer;
 
   PetscInitialize(&argc,&args,(char*)0,help);
   ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
@@ -77,6 +78,8 @@ int main(int argc,char **args)
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
+  viewer = PETSC_VIEWER_STDOUT_(PETSC_COMM_WORLD);
+  MatView(A, viewer);
   /*
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.

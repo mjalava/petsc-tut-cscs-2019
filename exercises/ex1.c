@@ -39,13 +39,13 @@ int main(int argc,char **argv)
      printed representing PETSC_COMM_WORLD, i.e., all the processors.
   */
   //TODO tasks 6, 7 
-  ierr = PetscPrintf(MPI_COMM_NULL,"Number of processors = %d, rank = %d\n",size,rank);//CHKERRQ(ierr);
+  ierr = PetscPrintf(MPI_COMM_WORLD,"Number of processors = %d, rank = %d\n",size,rank);CHKERRQ(ierr);
 
   /*
      Here a barrier is used to separate the two states.
   */
   ierr = MPI_Barrier(PETSC_COMM_WORLD);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"=================================\n\n");CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"1=================================\n\n");CHKERRQ(ierr);
 
   /*
     Here we simply use PetscPrintf() with the communicator PETSC_COMM_SELF
@@ -53,12 +53,13 @@ int main(int argc,char **argv)
     output from different processes does not appear in any particular order.
   */
   //TODO task 8
-
+  //  ierr = PetscPrintf(PETSC_COMM_SELF,"Number of processors = %d, rank = %d\n",size,rank);CHKERRQ(ierr);  
+  ierr = PetscSynchronizedPrintf(PETSC_COMM_SELF,"Number of processors = %d, rank = %d\n",size,rank);CHKERRQ(ierr);
   /*
      Here a barrier is used to separate the two states.
   */
   ierr = MPI_Barrier(PETSC_COMM_WORLD);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"=================================\n\n");CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"2=================================\n\n");CHKERRQ(ierr);
 
 
   /*
@@ -72,8 +73,9 @@ int main(int argc,char **argv)
      in the communicator can begin printing to the screen.
   */
   //TODO task 9
+  ierr = PetscSynchronizedPrintf(PETSC_COMM_WORLD,"Number of processors = %d, rank = %d\n",size,rank);CHKERRQ(ierr);
   ierr = PetscSynchronizedFlush(PETSC_COMM_WORLD,PETSC_STDOUT);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"=================================\n\n");CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"3=================================\n\n");CHKERRQ(ierr);
 
 
   /*
@@ -82,8 +84,8 @@ int main(int argc,char **argv)
   {
     PetscInt myint = -123;
     //TODO task 10, 11
-    //ierr = PetscOptionsGetInt(NULL,NULL,"-your_option_name_here",&myint,NULL);CHKERRQ(ierr);
-    //ierr = PetscPrintf(PETSC_COMM_WORLD,"myint = %d\n",myint);CHKERRQ(ierr);
+    ierr = PetscOptionsGetInt(NULL,NULL,"-myint",&myint,NULL);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"myint = %d\n",myint);CHKERRQ(ierr);
   }
 
   /*
